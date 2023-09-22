@@ -39,7 +39,7 @@ public class SimplePipeline {
                         return input;
                     }
                 }))
-                .apply(ClickHouseIO.<Sim>write("jdbc:clickhouse://10.226.136.231:8123/default", "sim"));
+                .apply(ClickHouseIO.<Sim>write("jdbc:clickhouse://{{your-clickhouse}}:8123/default", "sim"));
         // run pipeline
         pipeline.run().waitUntilFinish();
     }
