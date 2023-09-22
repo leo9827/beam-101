@@ -14,7 +14,7 @@ package main;
  *    level Int32 comment 'level'
  * ) engine MergeTree ORDER BY name settings index_granularity = 8192;
  */
-public class Simpl {  
+public class SimplePipeline {  
     public static void main(String[] args) {
         ObjectMapper om = new ObjectMapper();
         // init pipeline
