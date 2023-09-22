@@ -15,32 +15,33 @@ package main;
  * ) engine MergeTree ORDER BY name settings index_granularity = 8192;
  */
 public class Simpl {  
-    public static void main(String[] args) {  
+    public static void main(String[] args) {
         ObjectMapper om = new ObjectMapper();
-        // init pipeline  
-        PipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().create();  
-        options.setRunner(DirectRunner.class);  
-        Pipeline pipeline = Pipeline.create(options);  
-        // read data, there use TextIO, more io connector see: https://beam.apache.org/documentation/io/connectors/  
-        PCollection<Sim> pc = pipeline.apply("read from text file", TextIO.read().from("/var/sim_test.txt")) // there can replace with other connector IO.
-                .apply("convert json to java bean test", ParDo.of(new DoFn<String, Sim>() {  
-                    @ProcessElement  
-                    public void process(ProcessContext c) throws JsonProcessingException {  
-                        String json = c.element();  
-                        System.out.println("-------input in [convert json to java bean test]: " + json + "--------");  
-                        Sim sim = om.readValue(json, Sim.class);  
-                        c.output(sim);  
-                    }                
-                }));
-        pc.apply("element peek", MapElements.via(new SimpleFunction<Sim, Sim>() {  
-            @Override  
-            public Sim apply(Sim input) {  
-                System.out.println("-------input in [element peek]: " + input.toString() + "--------");  
-                return input;  
-            }                
-        })).apply(ClickHouseIO.<Sim>write("jdbc:clickhouse://{{your_clickhouse}}:8123/default", "sim"));  
-        // run pipeline  
-        pipeline.run().waitUntilFinish();  
+        // init pipeline
+        PipelineOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().create();
+        options.setRunner(DirectRunner.class);
+        Pipeline pipeline = Pipeline.create(options);
+        // read data, there use TextIO, more io connector see: https://beam.apache.org/documentation/io/connectors/
+        pipeline.apply("read from text file", TextIO.read().from("/var/sim_test.txt")) // there can replace with other connector IO.
+                .apply("convert json to java bean test", ParDo.of(new DoFn<String, Sim>() {
+                    @ProcessElement
+                    public void process(ProcessContext c) throws JsonProcessingException {
+                        String json = c.element();
+                        System.out.println("-------input in [convert json to java bean test]: " + json + "--------");
+                        Sim sim = om.readValue(json, Sim.class);
+                        c.output(sim);
+                    }
+                }))
+                .apply("element peek", MapElements.via(new SimpleFunction<Sim, Sim>() {
+                    @Override
+                    public Sim apply(Sim input) {
+                        System.out.println("-------input in [element peek]: " + input.toString() + "--------");
+                        return input;
+                    }
+                }))
+                .apply(ClickHouseIO.<Sim>write("jdbc:clickhouse://10.226.136.231:8123/default", "sim"));
+        // run pipeline
+        pipeline.run().waitUntilFinish();
     }
 }
 
