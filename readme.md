@@ -1,4 +1,4 @@
-## Beam Intr
+## Beam introduce
 Apache Beam是一个用于大数据处理的开源分布式计算框架。它**提供了一种统一的编程模型**，可以用于在不同的分布式处理引擎上编写批处理和流处理任务。
 
 Apache Beam的设计目标是提供一种通用的编程模型，使得**能够以一种统一的方式编写并行数据处理任务，而无需关心底层的执行引擎**。它允许在不同的执行引擎上运行相同的代码，执行引擎包括Apache Flink、Apache Spark、Google Cloud Dataflow等。
